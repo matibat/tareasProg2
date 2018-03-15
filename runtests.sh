@@ -1,5 +1,7 @@
 #!/bin/bash
 
+FLAG="$1"
+
 echo "\nIniciando..."
 NUMTEST="1"
 while [ "${NUMTEST}" -lt "14" ]; do
@@ -12,7 +14,9 @@ while [ "${NUMTEST}" -lt "14" ]; do
     echo "Error en el test #${NUMTEST}"
     echo "\nEntrada:"
     cat -n test/${NUMTEST}.in
-    break
+    if [ "x${FLAG}" != "x-a" ]; then
+      break
+    fi
   fi
   
   NUMTEST="$(expr "$NUMTEST" "+" "1")"
