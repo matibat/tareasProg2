@@ -1,0 +1,9 @@
+# prueba imprimir
+imprimir_numero
+imprimir_frase
+imprimir_info
+cambiar_numero 51
+imprimir_info
+cambiar_frase abcde
+imprimir_info
+Fin
