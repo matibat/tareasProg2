@@ -1,7 +1,0 @@
-son_iguales (1,a) (1,a)
-son_iguales (1,a b) (2,a b)
-son_iguales (1,a) (1, b)
-son_iguales (2,a) (2, a)
-combinar_info (10,abc) (20,cd)
-combinar_info (50,abc -) (-30, - cd)
-Fin
