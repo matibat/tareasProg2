@@ -24,6 +24,18 @@ cadena_t crear_cadena() {
   return res;
 }
 
+void insertar_antes(info_t i, localizador_t loc, cadena_t &cad) {
+  nodo *nuevo = new nodo; // crear un nuevo nodo
+  info_t dato = copia_info(i); // clonar i
+  nuevo->dato = dato; // grabar el dato
+  nuevo->anterior = loc->anterior; // va a estar entre el anterior a loc
+  nuevo->siguiente = loc;          // y loc en si
+  loc->anterior = nuevo;
+  if (loc->anterior == NULL) { // si loc es el primer elemento en cad
+    cad->inicio = nuevo;       // entonces nuevo sera el primero al retornar
+  }
+}
+
 void insertar_al_final(info_t i, cadena_t &cad) {
   nodo *nuevo = new nodo;
   nuevo->dato = i;
@@ -70,6 +82,85 @@ cadena_t segmento_cadena(localizador_t desde, localizador_t hasta, cadena_t cad)
     }
   }
   return res;
+}
+
+cadena_t separar_segmento(localizador_t desde, localizador_t hasta, cadena_t &cad) {
+  // acotar el segmento
+  cadena_t segmento = crear_cadena();
+  segmento->inicio = desde; 
+  segmento->final = hasta;
+  // retornar si la cadena es vacía
+  if (es_vacia_cadena(cad)) {
+    return segmento; // a este punto, segmento esta vacio
+  }
+  // quitar el segmento de cad
+  if (desde->anterior && hasta->siguiente) {       // si segmento no toca los bordes de cad...
+    desde->anterior->siguiente = hasta->siguiente; //   entonces se ligan los nodos anterior y siguiente a segmento.
+  } else {
+    if (!(desde->anterior)) {         // si desde es el primero en cad...
+      cad->inicio = hasta->siguiente; //   entonces cad ahora comenzara en el siquiente a hasta.
+      cadena->inicio->anterior        //   el anterior al inicio
+      //  = segmento->final->siguiente  //     y el siguiente al ultimo de segmento
+        = NULL;                       //     son NULL
+    }
+    if (!(hasta->siguiente)) {        // si hasta es el ultimo en cad...
+      cad->final = desde->anterior;   //   entonces cad ahora finalizara en el anterior a desde
+      desde->anterior->siguiente      //   el siguiente al ultimo
+      //  = segmento->inicio->anterior  //     y el anterior al prinero de segento
+        = NULL;                       //     son NULL
+    }
+  }
+  return segmento;
+}
+
+cadena_t mezcla(cadena_t c1, cadena_t c2) { // todo: check me
+  cadena_t resultante = crear_cadena();
+  cadena_t auxc1 = crear_cadena(),
+           auxc2 = crear_cadena();
+  if (!(es_vacia(c1) && es_vacia(c2))) // si las dos no son vaicas a la vez...
+  if (es_vacia(c1)) { // si c1 es vacia...
+    if (c2->inicio->siguiente) { // siempre que el nodo inicial de c2 tenga un siguiente...
+      auxc2->inicio = c2->inicio->siguiente; // ese sera el nuevo inicial
+      auxc2->final = c2->final;
+    }
+    insertar_al_final(c2->inicio, resultante); // se agrega el valor del unico elemento posible (c1 no tiene elementos)
+    insertar_segmento_despues(mezcla(c1, auxc2), resultante->final, resultante); // se agrega la mezcla entre los valores restantes
+  } else if (es_vacia(c2)) { // si c2 es vacia...
+    if (c1->inicio->siguiente) {
+      auxc1->inicio = c1->inicio->siguiente;
+      auxc1->final = c1->final;
+    }
+    insertar_al_final(c1->inicio, resultante);
+    insertar_segmento_despues(mezcla(auxc1, c2), resultante->final, resultante);
+  } else { // si ninguna es vacia...
+    if (c1->inicio->num == c2->inicio->num) { // si los num de los nodos iniciales son iguales...
+      if (c1->siguiente) {
+        auxc1->inicio = ci->inicio->siguiente;
+        auxc1->final = c1->final;
+      }
+      insertar_segmento_despues(mezla(auxc1, c2), resultante->final, resultante);
+    } else { // si los num de los nodos iniciales son diferentes...
+      if (c1->inicio->num > c2->inicio->num) { // c1 > c2
+        if (c2->inicio->siguiente) { // siempre que el nodo inicial de c2 tenga un siguiente...
+          auxc2->inicio = c2->inicio->siguiente; // ese sera el nuevo inicial
+          auxc2->final = c2->final;
+        }
+        insertar_al_final(c2->inicio, resultante); // se agrega el valor del unico elemento posible (c1 no tiene elementos)
+        insertar_segmento_despues(mezcla(c1, auxc2), resultante->final, resultante); // se agrega la mezcla entre los valores restantes
+      } else { // c2 > c1
+        if (c1->inicio->siguiente) {
+          auxc1->inicio = c1->inicio->siguiente;
+          auxc1->final = c1->final;
+        }
+        insertar_al_final(c1->inicio, resultante);
+        insertar_segmento_despues(mezcla(auxc1, c2), resultante->final, resultante);
+      }
+    }
+  }
+  return resultante;
+}
+
+void remover_de_cadena(localizador_t &loc, cadena_t &cad) {
 }
 
 void liberar_cadena(cadena_t &cad) {
