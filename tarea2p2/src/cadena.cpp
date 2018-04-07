@@ -161,6 +161,23 @@ cadena_t mezcla(cadena_t c1, cadena_t c2) { // todo: check me
 }
 
 void remover_de_cadena(localizador_t &loc, cadena_t &cad) {
+  if (!es_vacia_cadena(cad)) // si es vacía no se trata la cadena
+  if ((es_inicio_cadena(loc) && es_final_cadena(loc))) { // si tiene solo un elemento...
+    delete loc;
+    cad->inicio = cad->final = NULL;
+  } else if (es_inicio_cadena(loc)) { // si es el inicio...
+    loc->siguiente->anterior = NULL;
+    cadena->inicio = loc->siguiente;
+    delete loc;
+  } else if (es_final_cadena(loc)) { // si es el final...
+    loc->anterior->siguiente == NULL;
+    cadena->final = loc->anterior;
+    delete loc;
+  } else { // si esta en el medio...
+    loc->anterior->siguiente = loc->siguiente;
+    loc->siguiente->anterior = loc->anterior;
+    delete loc;
+  }
 }
 
 void liberar_cadena(cadena_t &cad) {
@@ -197,11 +214,67 @@ bool esta_ordenada(cadena_t cad) {
   return res;
 }
 
+bool es_final_cadena(localizador_t loc, cadena_t cad) {
+  if (!es_vacia_cadena(cad) && loc->siguiente == NULL) {
+    return true;
+  }
+  return false;
+}
+
+bool es_inicio(localizador_t loc, cadena_t cad) {
+  if (!es_vacia_cadena(cad) && loc->anterior == NULL) {
+    return true;
+  }
+  return false;
+}
+
+bool localizador_en_cadena(localizador_t loc, cadena_t cad) {
+  if (es_vacia_cadena(cad)) 
+    return false;
+  localizador_t aux = loc;
+  while (!es_final_cadena(aux)) {
+    aux = aux->siguiente;
+  };
+  if (aux == final_cadena(cad))
+    return true;
+  return false;
+}
+
 bool precede_en_cadena(localizador_t loc1, localizador_t loc2, cadena_t cad) {
   localizador_t cursor = loc1;
   while (es_localizador(cursor) && (cursor != loc2))
     curson = siguiente(cursor, cad);
   return ((cursor == loc2) && (localizador_en_cadena(loc1, cadena)));
+}
+
+localizador_t inicio_cadena(cadena_t cad) {
+  return cad->inicio;
+}
+
+localizador_t final_cadena(cadena_t cad) {
+  return cad->final;
+}
+
+localizador_t kesimo(nat k, cadena_t cad) {
+  if (k == 0 || es_vacia(cad)) 
+    return NULL;
+  nat i = 1;
+  localizador_t iesimo = cad->inicio;
+  do {
+    if (i == k)
+      break;
+    i++;
+    iesimo = iesimo->siguiente; // si es el ultimo, iesimo va a ser NULL
+  } while (!es_final_cadena(iesimo));
+  return iesimo;
+}
+
+localizador_t siguiente(localizador_t loc, cadena_t cad) {
+  return loc->siguiente;
+}
+
+localizador_t anterior(localizador_t loc, cadena_t cad) {
+  return loc->anterior;
 }
 
 localizador_t menor_en_cadena(localizador_t loc, cadena_t cad) {
@@ -224,6 +297,18 @@ localizador_t siguiente_clave(int clave, localizador_t loc, cadena_t cad) {
   else {
     while (es_localizador(res) && numero_info(info_cadena(res, cad)) != clave)
       res = siguiente(res, cad);
+  }
+  return res;
+}
+
+localizador_t anterior_clave(int clave, localizador_t loc, cadena_t cad) {
+  assert(es_vacia_cadena(cad) || localizador_en_cadena(loc, cad));
+  localizador_t res = loc;
+  if (es_vacia_cadena(cad))
+    res = NULL;
+  else {
+    while (es_localizador(res) && numero_info(info_cadena(res, cad)) != clave)
+      res = anterior(res, cad);
   }
   return res;
 }
