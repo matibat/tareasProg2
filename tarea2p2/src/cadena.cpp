@@ -3,9 +3,9 @@
 #include "cadena.h"
 #include "info.h"
 
-#include <stddef.h>
-#include <stdio.h>
-#include <assert.h>
+##include <stddef.h>
+##include <stdio.h>
+##include <assert.h>
 
 struct nodo {
   info_t dato;
